@@ -21,8 +21,8 @@ def remove_columns(output_file_path: Path):
         coulmn = line.strip().split(',')
         
         # Delete 5 first bc else index moves
-        del coulmn[5]  
-        del coulmn[3]
+        del coulmn[4]  
+        del coulmn[2]
         
         modified_line = ','.join(coulmn)
         modified_lines.append(modified_line)
@@ -69,7 +69,7 @@ def process_file(input_file_path: Path, output_file_path: Path):
     output_file_path.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(input_file_path, output_file_path)
     
-    if input_file_path.name == "labels":
+    if input_file_path.suffix != ".plt":
         return
     
     remove_lines(output_file_path, 6)
