@@ -61,17 +61,22 @@ def check_length(output_file_path: Path) -> int:
 # Delete a file 
 def delete_file(output_file_path: Path):
     output_file_path.unlink()
-    print(output_file_path," files is deleted")
 
 
 # Function to process a single file, if a file has more than 2500 lines it will be deleted
 def process_file(input_file_path: Path, output_file_path: Path):
+    print(f"processing: {input_file_path} -> {output_file_path}")
     output_file_path.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(input_file_path, output_file_path)
     
+    if input_file_path.name == "labels":
+        return
+    
     remove_lines(output_file_path, 6)
+    
     if check_length(output_file_path) > 2500:
-        return delete_file(output_file_path)
+        delete_file(output_file_path)
+        return
     remove_columns(output_file_path)
     column_merger(output_file_path)
 
@@ -80,9 +85,14 @@ def process_file(input_file_path: Path, output_file_path: Path):
 def process_folder(input_folder: Path, output_folder: Path):
     os.makedirs(output_folder, exist_ok=True)
     for root, dirs, files in os.walk(input_folder):
+        # Get the root folder we walk, relative to the input folder
+        # to help create the output folder structure.
+        relative_root = Path(root).relative_to(input_folder)
+
         for file in files:
             input_file_path = Path(os.path.join(root, file))
-            output_file_path = Path(os.path.join(output_folder, input_file_path.parent.parent.name, file))
+            output_file_path = output_folder / relative_root / file
+
             process_file(input_file_path, output_file_path)
 
-process_folder(Path("dataset/in/Data"), Path("dataset/out/Data"))
+process_folder(Path("dataset/dataset/Data"), Path("dataset/out/Data"))
