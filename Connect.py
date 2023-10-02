@@ -1,12 +1,12 @@
 import mysql.connector as mysql
 from mysql.connector import Error
 
-def add_table(name, query):
-    cursor.execute(query)
+def add_table(name: str, query: str):
+    execute = cursor.execute(query)
 
-    if cursor.execute(query) != None:
+    if execute != None:
         connection.commit()
-        print(name+"table added")
+        print(name," table added")
     else:
         print("Could not create table")
 
@@ -14,7 +14,7 @@ def add_table(name, query):
 
 try:
     connection = mysql.connect(host='localhost',
-                                database='test',
+                                database='sdd_1',
                                 user='root',
                                 password='mysql-password')
     if connection.is_connected():
