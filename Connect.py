@@ -25,7 +25,7 @@ try:
         record = cursor.fetchone()
         print("You're connected to database: ", record)
         add_table("user", """
-            CREATE TABLE IF NOT EXISTS Users (
+            CREATE TABLE IF NOT EXISTS User (
                 user_id SERIAL PRIMARY KEY,
                 has_labels BOOLEAN
             )
@@ -34,7 +34,7 @@ try:
                 CREATE TABLE IF NOT EXISTS Activity (
                     activity_id SERIAL PRIMARY KEY,
                     user_id INT,
-                    FOREIGN KEY (user_id) REFERENCES user(user_id),
+                    FOREIGN KEY (user_id) REFERENCES User(user_id),
                     transportation_mode VARCHAR(25),
                     start_date_time DATETIME,
                     end_date_time DATETIME
@@ -44,7 +44,7 @@ try:
                 CREATE TABLE IF NOT EXISTS TrackPoint (
                     trackpoint_id SERIAL PRIMARY KEY,
                     activity_id INT,
-                    FOREIGN KEY (activity_id) REFERENCES activity(activity_id),
+                    FOREIGN KEY (activity_id) REFERENCES Activity(activity_id),
                     lat DOUBLE,
                     lon DOUBLE,
                     altitude INT,
