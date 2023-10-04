@@ -26,13 +26,13 @@ try:
         print("You're connected to database: ", record)
         add_table("user", """
             CREATE TABLE IF NOT EXISTS Users (
-                id VARCHAR(255),
+                id SERIAL,
                 has_labels BOOLEAN
             )
             """)
         add_table("activity", """
                 CREATE TABLE IF NOT EXISTS Activity (
-                    id INT,
+                    id SERIAL,
                     user_id VARCHAR(255),
                     transportation_mode VARCHAR(25),
                     start_date_time DATETIME,
@@ -41,7 +41,7 @@ try:
                 """)
         add_table("trackpoint","""
                 CREATE TABLE IF NOT EXISTS TrackPoint (
-                    id INT,
+                    id SERIAL,
                     activity_id VARCHAR(255),
                     lat DOUBLE,
                     lon DOUBLE,
