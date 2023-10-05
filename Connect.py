@@ -32,7 +32,7 @@ def set_users():
 
         user_list.append(user)
     
-    print(user_list)
+    #print(user_list)
     return user_list
 
 
@@ -44,22 +44,22 @@ def add_users():
         user_id: [] = user["_id"]
         has_label: [] = user["hasLabel"]
 
-        sql = "INSERT INTO User (user_id, has_labels) VALUES (%s, %s)"
+        sql = "INSERT INTO User (user_id, has_labels) VALUES (%s, %s);"
         val = (user_id, has_label)
 
-        execute = cursor.execute(sql, val)
+        execute = cursor.execute(sql, val, multi=True)
 
         if execute != None:
             connection.commit()
-            print("Could not add user: ", user["_id"])
+            print(user["_id"], " user added")
         else:
-            print("Could not send query")
+            print("Could not add users")
      
 
 
 try:
     connection = mysql.connect(host='localhost',
-                                database='test',
+                                database='test1',
                                 user='root',
                                 password='mysql-password')
     if connection.is_connected():
@@ -77,7 +77,7 @@ try:
             """)
         send_query("activity table ", """
                 CREATE TABLE IF NOT EXISTS Activity (
-                    activity_id SERIAL PRIMARY KEY,
+                    activity_id INT AUTO_INCREMENT PRIMARY KEY,
                     user_id VARCHAR(3),
                     FOREIGN KEY (user_id) REFERENCES User(user_id),
                     transportation_mode VARCHAR(25),
@@ -87,15 +87,15 @@ try:
                 """)
         send_query("trackpoint table","""
                 CREATE TABLE IF NOT EXISTS TrackPoint (
-                    trackpoint_id SERIAL PRIMARY KEY,
-                    activity_id BIG INT,
+                    trackpoint_id INT AUTO_INCREMENT PRIMARY KEY,
+                    activity_id INT,
                     FOREIGN KEY (activity_id) REFERENCES Activity(activity_id),
                     lat DOUBLE,
                     lon DOUBLE,
                     altitude INT,
                     date_time DATETIME
                 )
-                """)
+                """)      
         add_users()
 except Error as e:
     print("Error while connecting to MySQL", e)
