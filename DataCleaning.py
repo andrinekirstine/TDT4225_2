@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 import shutil
 
+from walk_dataset import walk_dataset
+
 # Read file, reads from line 6 then write it without the 6 first lines
 def remove_lines(output_file_path: Path, remove_line: int):
     with open(output_file_path, 'r') as file:
@@ -70,11 +72,12 @@ def process_file(input_file_path: Path, output_file_path: Path):
     shutil.copyfile(input_file_path, output_file_path)
     
     if input_file_path.suffix != ".plt":
+        print("Got invaid file:", input_file_path, "not processing")
         return
     
     remove_lines(output_file_path, 6)
     
-    if check_length(output_file_path) > 2500:
+    if check_length(output_file_path) >= 2500:
         delete_file(output_file_path)
         return
     remove_columns(output_file_path)
@@ -84,15 +87,12 @@ def process_file(input_file_path: Path, output_file_path: Path):
 # Function to process all files in a folder
 def process_folder(input_folder: Path, output_folder: Path):
     os.makedirs(output_folder, exist_ok=True)
-    for root, dirs, files in os.walk(input_folder):
-        # Get the root folder we walk, relative to the input folder
-        # to help create the output folder structure.
-        relative_root = Path(root).relative_to(input_folder)
+    
+    for file, _ in walk_dataset(input_folder):
+        input_file_path = Path(input_folder, file)
+        output_file_path = output_folder / file
+        print(input_file_path.exists(), output_file_path)
+        process_file(input_file_path, output_file_path)
 
-        for file in files:
-            input_file_path = Path(os.path.join(root, file))
-            output_file_path = output_folder / relative_root / file
-
-            process_file(input_file_path, output_file_path)
-
-process_folder(Path("dataset/dataset/Data"), Path("dataset/out/Data"))
+if __name__ == "__main__":
+    process_folder(Path("dataset/dataset/Data"), Path("dataset/out/Data"))

@@ -3,3 +3,7 @@
 /.dist
 
 /dataset/dataset
+
+.completed_files
+
+.completed_users
